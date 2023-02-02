@@ -1,4 +1,4 @@
-package com.example.wallpaper.presentation
+package com.example.wallpaper.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,17 +7,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.example.wallpaper.presentation.category.CategoryScreen
-import com.example.wallpaper.presentation.theme.WallpaperTheme
+import com.example.wallpaper.app.navigation.WallpaperNavigation
+import com.example.wallpaper.app.theme.WallpaperTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CategoryScreen(
+                    WallpaperNavigation(
                         windowSizeClass = calculateWindowSizeClass(this)
                     )
                 }

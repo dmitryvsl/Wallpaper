@@ -1,6 +1,5 @@
-package com.example.wallpaper.presentation.category
+package com.example.wallpaper.feature.category.presentation
 
-import android.app.Activity
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,72 +19,55 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass.Companion.Medium
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.wallpaper.R
-import com.example.wallpaper.presentation.MainActivity
-import com.example.wallpaper.presentation.theme.WallpaperTheme
-import com.example.wallpaper.presentation.theme.dimens
+import com.example.wallpaper.core.components.TopAppBar
+import com.example.wallpaper.core.model.CategoryType
+import com.example.wallpaper.app.theme.WallpaperTheme
+import com.example.wallpaper.feature.category.presentation.theme.dimens
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel(),
-    windowSizeClass: WindowSizeClass
+    isScreenSizeCompact: Boolean,
+    navigateToCategoryDetail: (CategoryType) -> Unit,
 ) {
     val categories by viewModel.categories.collectAsState()
-    val isScreenSizeMedium = remember { windowSizeClass.widthSizeClass == WindowWidthSizeClass.Medium }
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
-            modifier = Modifier.shadow(elevation = 4.dp),
-            colors = TopAppBarDefaults.smallTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            title = {
-                Text(
-                    text = stringResource(R.string.wallpaper),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        )
-        if (isScreenSizeMedium)
-            CategoryVerticalGrid(categories = categories)
+        TopAppBar()
+        if (isScreenSizeCompact)
+            CategoryColumnList(
+                categories = categories,
+                onCategorySelected = navigateToCategoryDetail
+            )
         else
-            CategoryColumnList(categories = categories)
+            CategoryVerticalGrid(
+                categories = categories,
+                onCategorySelected = navigateToCategoryDetail
+            )
 
     }
 }
 
 @Composable
 fun CategoryColumnList(
-    categories: List<Category>
+    categories: List<Category>,
+    onCategorySelected: (CategoryType) -> Unit
 ) {
     LazyColumn {
         item(key = "select_category") {
@@ -99,7 +81,10 @@ fun CategoryColumnList(
             )
         }
         items(items = categories, key = { category -> category.title }) { category ->
-            CategoryCard(category = category, contentScale = ContentScale.FillWidth)
+            CategoryCard(
+                category = category,
+                contentScale = ContentScale.FillWidth
+            ) { onCategorySelected(category.type) }
         }
         item(key = "bottom_padding") {
             Spacer(Modifier.navigationBarsPadding())
@@ -109,7 +94,8 @@ fun CategoryColumnList(
 
 @Composable
 fun CategoryVerticalGrid(
-    categories: List<Category>
+    categories: List<Category>,
+    onCategorySelected: (CategoryType) -> Unit
 ) {
     val columnCount = 2
     LazyVerticalGrid(
@@ -127,7 +113,7 @@ fun CategoryVerticalGrid(
             )
         }
         items(items = categories, key = { category -> category.title }) { category ->
-            CategoryCard(category = category, height = 150.dp)
+            CategoryCard(category = category, height = 150.dp) { onCategorySelected(category.type) }
         }
         item(key = "bottom_padding", span = { GridItemSpan(columnCount) }) {
             Spacer(Modifier.navigationBarsPadding())
@@ -135,12 +121,12 @@ fun CategoryVerticalGrid(
     }
 }
 
-
 @Composable
 fun CategoryCard(
     category: Category,
     height: Dp = 100.dp,
-    contentScale: ContentScale = ContentScale.FillBounds
+    contentScale: ContentScale = ContentScale.FillBounds,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -150,7 +136,7 @@ fun CategoryCard(
             .padding(horizontal = MaterialTheme.dimens.padding.padding_1)
             .clip(MaterialTheme.shapes.medium)
             .background(Color.DarkGray)
-            .clickable { },
+            .clickable { onClick() },
         contentAlignment = Alignment.CenterStart
     ) {
         Image(
@@ -168,13 +154,13 @@ fun CategoryCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CategoryScreenPreview() {
     WallpaperTheme {
         CategoryScreen(
-            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(840.dp, 1280.dp)))
+            isScreenSizeCompact = true
+        ) {}
     }
 }
 

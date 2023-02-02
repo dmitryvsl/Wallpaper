@@ -1,4 +1,4 @@
-package com.example.wallpaper.presentation.theme
+package com.example.wallpaper.feature.category.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

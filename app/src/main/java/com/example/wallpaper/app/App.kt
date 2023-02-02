@@ -1,4 +1,4 @@
-package com.example.wallpaper.presentation
+package com.example.wallpaper.app
 
 import android.app.Application
 import dagger.hilt.android.AndroidEntryPoint

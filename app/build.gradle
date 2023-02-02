@@ -55,8 +55,13 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.44"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.2.2")
+
     // Accompanist
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.29.1-alpha"
+    def accompanist_version = "0.29.1-alpha"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
 
     //Compose
     implementation platform('androidx.compose:compose-bom:2022.10.00')
