@@ -5,5 +5,5 @@ import com.example.wallpaper.core.model.DataState
 import com.example.wallpaper.feature.category_detail.domain.model.Image
 
 interface ImageRepository {
-    fun fetchImages(categoryType: CategoryType): DataState<List<Image>>
+    suspend fun fetchImages(categoryType: CategoryType, page: Int): DataState<List<Image>>
 }

@@ -16,17 +16,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,23 +40,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.wallpaper.R
 import com.example.wallpaper.core.components.ErrorScreen
 import com.example.wallpaper.core.components.LoadingPlaceholder
 import com.example.wallpaper.core.components.TopAppBar
+import com.example.wallpaper.core.exception.ExceptionMapper
 import com.example.wallpaper.core.extension.shimmerEffect
 import com.example.wallpaper.core.model.CategoryType
-import com.example.wallpaper.core.model.DataState
 import com.example.wallpaper.feature.category.presentation.theme.dimens
 import com.example.wallpaper.feature.category_detail.domain.model.Image
 
 private val imageWidth = 150.dp
-private val imageHeight = 200.dp
+private val imageHeight = 300.dp
 
 @Composable
 fun CategoryDetailScreen(
@@ -60,13 +68,22 @@ fun CategoryDetailScreen(
     onBackClick: () -> Unit,
 ) {
     var isFirstEnter by rememberSaveable { mutableStateOf(true) }
-
+    val lazyGridState = rememberLazyGridState()
+    val images by viewModel.images.collectAsState()
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val endReached by remember {
+        derivedStateOf {
+            lazyGridState.firstVisibleItemIndex == (images.size - lazyGridState.layoutInfo.visibleItemsInfo.size)
+        }
+    }
+    LaunchedEffect(endReached) {
+        viewModel.fetchNextPage()
+    }
     LaunchedEffect(isFirstEnter) {
         if (isFirstEnter) viewModel.fetchImages(categoryType)
         isFirstEnter = false
     }
-
-    val images by viewModel.images.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -82,27 +99,90 @@ fun CategoryDetailScreen(
                 )
             }
         }
+        when {
+            images.isNotEmpty() -> ImageList(
+                state = lazyGridState,
+                images = images,
+                isItemsLoading = loading,
+                itemLoadingError = error?.let { stringResource(ExceptionMapper.getDescription(it)) }
+            ) {
+                viewModel.fetchNextPage()
+            }
 
-        when (images) {
-            is DataState.Loading -> ShimmerList()
-            is DataState.Error -> ErrorScreen(onButtonClick = { viewModel.fetchImages(categoryType) })
-            is DataState.Success -> ImageList((images as DataState.Success<List<Image>>).data)
+            loading -> ShimmerList()
+            error != null -> ErrorScreen(
+                errorDescription = stringResource(ExceptionMapper.getDescription(error!!)),
+                onButtonClick = { viewModel.fetchImages(categoryType) }
+            )
         }
-
     }
 }
 
 @Composable
-fun ImageList(images: List<Image>) {
+fun ImageList(
+    state: LazyGridState,
+    images: List<Image>,
+    isItemsLoading: Boolean = false,
+    itemLoadingError: String? = null,
+    onRetryClick: () -> Unit,
+) {
     LazyVerticalGrid(
+        state = state,
         columns = GridCells.Adaptive(minSize = imageWidth)
     ) {
-        items(items = images, key = { image -> image.hashCode() }) { image ->
-            ImageCard(image.url)
+        items(count = images.size, key = { image -> image.hashCode() }) { index ->
+            ImageCard(images[index].url)
         }
+
+        if (isItemsLoading) item(span = { GridItemSpan(this.maxLineSpan) }) { LoadingItem() }
+        if (itemLoadingError != null) item(span = { GridItemSpan(this.maxLineSpan) }) {
+            ErrorItem(
+                message = itemLoadingError,
+                onRetryClick = onRetryClick
+            )
+        }
+
         item(key = "bottom_spacing", span = { GridItemSpan(currentLineSpan = this.maxLineSpan) }) {
             Spacer(Modifier.navigationBarsPadding())
         }
+    }
+}
+
+@Composable
+fun ErrorItem(message: String, onRetryClick: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(MaterialTheme.dimens.padding.padding_0_25))
+        Button(
+            onClick = onRetryClick
+        ) {
+            Text(
+                text = stringResource(R.string.reload),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun LoadingItem() {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 
@@ -123,19 +203,25 @@ fun ImageCard(
             var isLoading by remember { mutableStateOf(false) }
             var isError by remember { mutableStateOf(false) }
             if (isLoading) LoadingPlaceholder()
-            if (isError)  Image(painter =  painterResource(R.drawable.error), contentDescription = null)
+            if (isError) Image(
+                painter = painterResource(R.drawable.error),
+                contentDescription = null
+            )
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = url,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(url)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 onLoading = {
                     isLoading = true
-                    isError  = false
+                    isError = false
                 },
                 onError = {
                     isLoading = false
-                    isError  = true
+                    isError = true
                 },
                 onSuccess = {
                     isLoading = false

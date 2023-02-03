@@ -7,4 +7,5 @@ sealed class DataState<T> {
     class Loading<T> : DataState<T>()
 
     class Error<T>(val e: Throwable) : DataState<T>()
+
 }

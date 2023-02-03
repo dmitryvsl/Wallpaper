@@ -8,13 +8,6 @@ import javax.inject.Inject
 
 class FakeImageRepository @Inject constructor() : ImageRepository {
 
-    override fun fetchImages(categoryType: CategoryType): DataState<List<Image>> {
-        val randomNumber = (0..10).random()
-        // 33% chance return error
-        return if (randomNumber % 3 == 0) DataState.Error(UnknownError())
-        else DataState.Success(images)
-    }
-
     private val images = listOf(
         Image(
             url = "https://pixabay.com/get/gc73225fe117f1bb6cbca2fabb921d82879f2c2e318e773e91e9802dd862289d5a3b565e33f90a437dc4330b3956afd36cc8ff2e24b7ae76c5d252ca04bc23818_640.jpg",
@@ -53,4 +46,14 @@ class FakeImageRepository @Inject constructor() : ImageRepository {
             fullImageUrl = "https://pixabay.com/get/g78a8ae73fd24240d744633896ffba4c38d414d1b2694ed37a1a2f946445e371c06066f5af267f7d962df77268ad28f327c23e6531afd4de1aa3a4d1f5452a3fd_1280.jpg"
         ),
     )
+
+    override suspend fun fetchImages(
+        categoryType: CategoryType,
+        page: Int
+    ): DataState<List<Image>> {
+        val randomNumber = (0..10).random()
+        // 33% chance return error
+        return if (randomNumber % 3 == 0) DataState.Error(UnknownError())
+        else DataState.Success(images)
+    }
 }
