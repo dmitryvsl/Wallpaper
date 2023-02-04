@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -75,9 +76,9 @@ fun ImageDetailScreen(
     val request: ImageRequest = ImageRequest.Builder(context)
         .data(url)
         .listener(
-            onStart = { isHighQualityImageLoadingError = false },
             onError = { _, _ ->
                 isHighQualityImageLoadingError = true
+                isHighQualityImageLoading = false
             },
             onSuccess = { _, success ->
                 drawable = success.drawable.current
@@ -87,7 +88,7 @@ fun ImageDetailScreen(
             }
         )
         .build()
-    context.imageLoader.enqueue(request)
+    var imageRequestDisposable = context.imageLoader.enqueue(request)
 
     Box(
         modifier = Modifier
@@ -95,12 +96,24 @@ fun ImageDetailScreen(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        if (imagePainter == null) LoadingPlaceholder()
-        else ImageAndProgressBar(imagePainter!!, isHighQualityImageLoading, wallpaperBitmap)
+        when {
+            isHighQualityImageLoadingError -> {
+                imageRequestDisposable.dispose()
+                ErrorItem(message = stringResource(R.string.errorOccured)) {
+                    imageRequestDisposable = context.imageLoader.enqueue(request)
+                    isHighQualityImageLoadingError = false
+                    isHighQualityImageLoading = true
+                }
+            }
 
-        if (isHighQualityImageLoadingError) ErrorItem(message = stringResource(R.string.errorOccured)) {
-            context.imageLoader.enqueue(request)
-            isHighQualityImageLoadingError = false
+            imagePainter == null && isHighQualityImageLoading -> LoadingPlaceholder()
+
+            imagePainter != null -> ImageAndProgressBar(
+                imagePainter = imagePainter!!,
+                showProgressBar = isHighQualityImageLoading,
+                wallpaperBitmap = wallpaperBitmap
+            )
+
         }
 
         OutlinedIconButton(
@@ -131,7 +144,7 @@ fun BoxScope.ImageAndProgressBar(
         isError = false
     )
     if (showProgressBar) CircularProgressIndicator()
-    else SetAsWallpaper(wallpaperBitmap)
+    else if (wallpaperBitmap != null) SetAsWallpaper(wallpaperBitmap)
 
 }
 
