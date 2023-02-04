@@ -23,6 +23,7 @@ import com.example.wallpaper.feature.category.presentation.theme.sw840Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Orange,
+    onPrimary = White,
     surface = LightBlack,
     background = Black
 )
@@ -36,16 +37,9 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun WallpaperTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

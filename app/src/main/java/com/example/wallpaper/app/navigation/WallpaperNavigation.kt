@@ -6,21 +6,20 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import com.example.wallpaper.feature.category.presentation.navigation.category
 import com.example.wallpaper.feature.category.presentation.navigation.category_route
 import com.example.wallpaper.feature.category_detail.presentation.navigation.categoryDetail
 import com.example.wallpaper.feature.category_detail.presentation.navigation.navigateToCategoryDetail
 import com.example.wallpaper.feature.image_detail.presentation.navigation.imageDetail
 import com.example.wallpaper.feature.image_detail.presentation.navigation.navigateToImageDetail
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WallpaperNavigation(
     windowSizeClass: WindowSizeClass,
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
 
     val isScreenSizeCompact =
         remember { windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact }

@@ -1,5 +1,6 @@
 package com.example.wallpaper.di
 
+import com.example.wallpaper.BuildConfig
 import com.example.wallpaper.feature.category_detail.data.ImageListRepositoryImpl
 import com.example.wallpaper.feature.category_detail.data.datasource.ApiService
 import com.example.wallpaper.feature.category_detail.domain.repository.ImageListRepository
@@ -46,7 +47,7 @@ interface DataModule {
                 val original = chain.request()
                 val originalHttpUrl = original.url
                 val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("key", "20362019-8fca0402ef8c3b9642d6f74a3")
+                    .addQueryParameter("key", BuildConfig.API_KEY)
                     .build()
                 val requestBuilder = original.newBuilder().url(url).build()
                 return@Interceptor chain.proceed(requestBuilder)
