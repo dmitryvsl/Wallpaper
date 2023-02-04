@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="animals">Животные</string>
+    <string name="music">Музыка</string>
+    <string name="nature">Природа</string>
+    <string name="fashion">Мода</string>
+    <string name="sports">Спорт</string>
+    <string name="people">Люди</string>
+    <string name="category">Категория</string>
+    <string name="back">Назад</string>
+    <string name="oopsError">Упс…Ошибочка</string>
+    <string name="smthWentWrong">Что-то пошло не так. Попробуйте еще раз</string>
+    <string name="reload">Перезагрузить</string>
+    <string name="serverBusyNow">Сервер слишком загружен. Попробуйте еще раз позже</string>
+    <string name="connectionError">Не удалось установить соединение с сервером</string>
+    <string name="errorOccured">Что-то пошло не по плану</string>
+    <string name="noNetwork">Вы не подключены к сети Интернет</string>
+    <string name="setAsWallpaper">Установить как обои</string>
+    <string name="imageNowWallpaper">Изображение установлено как обои</string>
+    <string name="selectCategory">Выберите категорию</string>
+</resources>

@@ -78,7 +78,7 @@ fun CategoryColumnList(
                 modifier = Modifier
                     .padding(vertical = MaterialTheme.dimens.padding.padding_0_5)
                     .padding(start = MaterialTheme.dimens.padding.padding_1),
-                text = "Select Category",
+                text = stringResource(R.string.selectCategory),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -110,7 +110,7 @@ fun CategoryVerticalGrid(
                 modifier = Modifier
                     .padding(vertical = MaterialTheme.dimens.padding.padding_0_5)
                     .padding(start = MaterialTheme.dimens.padding.padding_1),
-                text = "Select Category",
+                text = stringResource(R.string.selectCategory),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
