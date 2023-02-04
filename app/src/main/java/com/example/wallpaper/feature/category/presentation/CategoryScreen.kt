@@ -48,7 +48,10 @@ fun CategoryScreen(
     navigateToCategoryDetail: (CategoryType) -> Unit,
 ) {
     val categories by viewModel.categories.collectAsState()
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+    ) {
         TopAppBar()
         if (isScreenSizeCompact)
             CategoryColumnList(
