@@ -9,11 +9,13 @@
     <string name="people">People</string>
     <string name="category">Category</string>
     <string name="back">Back</string>
-    <string name="oopsError">Oops...Error</string>
+    <string name="oopsError">Oops…Error</string>
     <string name="smthWentWrong">Something went wrong. Give it another try.</string>
     <string name="reload">Reload</string>
     <string name="serverBusyNow">The server is busy now. Try again later</string>
     <string name="connectionError">Error connecting to server.</string>
     <string name="errorOccured">Some error occurred</string>
     <string name="noNetwork">You are not connected to any Network</string>
+    <string name="setAsWallpaper">Set as wallpaper</string>
+    <string name="imageNowWallpaper">Image is wallpaper now</string>
 </resources>

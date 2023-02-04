@@ -37,6 +37,7 @@ data class Hits(
 )
 
 fun Hits.asDomain() = Image(
+    id = id,
     url = webformatURL,
     fullImageUrl = largeImageURL
 )

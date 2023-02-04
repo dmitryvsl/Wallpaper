@@ -1,8 +1,8 @@
 package com.example.wallpaper.di
 
-import com.example.wallpaper.feature.category_detail.data.ImageRepositoryImpl
+import com.example.wallpaper.feature.category_detail.data.ImageListRepositoryImpl
 import com.example.wallpaper.feature.category_detail.data.datasource.ApiService
-import com.example.wallpaper.feature.category_detail.domain.repository.ImageRepository
+import com.example.wallpaper.feature.category_detail.domain.repository.ImageListRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 interface DataModule {
 
     @Binds
-    fun bindsImageRepository(repository: ImageRepositoryImpl): ImageRepository
+    fun bindsImageListRepository(repository: ImageListRepositoryImpl): ImageListRepository
 
     companion object{
 

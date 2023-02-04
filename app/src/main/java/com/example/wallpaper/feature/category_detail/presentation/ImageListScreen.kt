@@ -1,6 +1,5 @@
 package com.example.wallpaper.feature.category_detail.presentation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -23,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,19 +39,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.wallpaper.R
+import com.example.wallpaper.core.components.CustomAsyncImage
 import com.example.wallpaper.core.components.ErrorScreen
-import com.example.wallpaper.core.components.LoadingPlaceholder
 import com.example.wallpaper.core.components.TopAppBar
+import com.example.wallpaper.core.data.SharedPainter
 import com.example.wallpaper.core.exception.ExceptionMapper
 import com.example.wallpaper.core.extension.shimmerEffect
 import com.example.wallpaper.core.model.CategoryType
@@ -63,13 +63,15 @@ private val imageHeight = 300.dp
 
 @Composable
 fun CategoryDetailScreen(
-    viewModel: CategoryDetailViewModel = hiltViewModel(),
+    viewModel: ImageListViewModel = hiltViewModel(),
     categoryType: CategoryType,
     onBackClick: () -> Unit,
+    navigateToImageDetail: () -> Unit,
 ) {
     var isFirstEnter by rememberSaveable { mutableStateOf(true) }
     val lazyGridState = rememberLazyGridState()
-    val images by viewModel.images.collectAsState()
+    val images by viewModel.data.collectAsState()
+
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
     val endReached by remember {
@@ -104,7 +106,12 @@ fun CategoryDetailScreen(
                 state = lazyGridState,
                 images = images,
                 isItemsLoading = loading,
-                itemLoadingError = error?.let { stringResource(ExceptionMapper.getDescription(it)) }
+                itemLoadingError = error?.let { stringResource(ExceptionMapper.getDescription(it)) },
+                onItemClick = { url, painter ->
+                    SharedPainter.savePainter(painter)
+                    SharedPainter.saveUrl(url)
+                    navigateToImageDetail()
+                }
             ) {
                 viewModel.fetchNextPage()
             }
@@ -124,6 +131,7 @@ fun ImageList(
     images: List<Image>,
     isItemsLoading: Boolean = false,
     itemLoadingError: String? = null,
+    onItemClick: (String, Painter?) -> Unit,
     onRetryClick: () -> Unit,
 ) {
     LazyVerticalGrid(
@@ -131,7 +139,7 @@ fun ImageList(
         columns = GridCells.Adaptive(minSize = imageWidth)
     ) {
         items(count = images.size, key = { image -> image.hashCode() }) { index ->
-            ImageCard(images[index].url)
+            ImageCard(images[index].url) { onItemClick(images[index].fullImageUrl, it) }
         }
 
         if (isItemsLoading) item(span = { GridItemSpan(this.maxLineSpan) }) { LoadingItem() }
@@ -186,48 +194,43 @@ fun LoadingItem() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageCard(
-    url: String
+    url: String,
+    onClick: (Painter?) -> Unit,
 ) {
+    var isLoading by remember { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(url)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .build(),
+        onLoading = {
+            isLoading = true
+            isError = false
+        },
+        onError = {
+            isLoading = false
+            isError = true
+        }
+    )
     Surface(
         modifier = Modifier
             .padding(MaterialTheme.dimens.padding.padding_0_5)
             .fillMaxWidth()
             .height(imageHeight),
         shadowElevation = 1.dp,
+        onClick = { onClick(painter.state.painter) },
         tonalElevation = 1.dp,
         shape = MaterialTheme.shapes.medium
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            var isLoading by remember { mutableStateOf(false) }
-            var isError by remember { mutableStateOf(false) }
-            if (isLoading) LoadingPlaceholder()
-            if (isError) Image(
-                painter = painterResource(R.drawable.error),
-                contentDescription = null
-            )
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(url)
-                    .memoryCachePolicy(CachePolicy.ENABLED)
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                onLoading = {
-                    isLoading = true
-                    isError = false
-                },
-                onError = {
-                    isLoading = false
-                    isError = true
-                },
-                onSuccess = {
-                    isLoading = false
-                }
-            )
-        }
+        CustomAsyncImage(
+            asyncPainter = painter,
+            isLoading = isLoading,
+            isError = isError
+        )
     }
 }
 

@@ -12,4 +12,5 @@ interface ApiService {
         @Query("q") category: String,
         @Query("page") page: Int
     ): Response<NetworkResponse>
+
 }

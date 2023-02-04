@@ -1,6 +1,5 @@
 package com.example.wallpaper.feature.category_detail.presentation.navigation
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -23,7 +22,8 @@ fun NavController.navigateToCategoryDetail(
 }
 
 fun NavGraphBuilder.categoryDetail(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    navigateToImageDetail: () -> Unit,
 ) {
     composable(
         route = categoryDetailRoute,
@@ -33,7 +33,8 @@ fun NavGraphBuilder.categoryDetail(
         val type = CategoryType.values().first { it.type == intType }
         CategoryDetailScreen(
             categoryType = type,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToImageDetail = navigateToImageDetail
         )
     }
 }

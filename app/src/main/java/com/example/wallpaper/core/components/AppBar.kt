@@ -18,7 +18,9 @@ fun TopAppBar(
     navigationIcon: @Composable () -> Unit = {}
 ) {
     androidx.compose.material3.TopAppBar(
-        modifier = Modifier.shadow(elevation = 4.dp).zIndex(1f),
+        modifier = Modifier
+            .shadow(elevation = 4.dp)
+            .zIndex(1f),
         navigationIcon = navigationIcon,
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface

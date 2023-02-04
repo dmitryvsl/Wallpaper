@@ -1,5 +1,6 @@
 package com.example.wallpaper.core.extension
 
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -23,7 +24,10 @@ fun Modifier.shimmerEffect() = composed {
     val startOffsetX by transition.animateFloat(
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
-        animationSpec = infiniteRepeatable(tween(durationMillis = 1000))
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1000),
+            repeatMode = RepeatMode.Reverse
+        )
     )
 
     background(

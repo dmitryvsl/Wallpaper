@@ -10,6 +10,8 @@ import com.example.wallpaper.feature.category.presentation.navigation.category
 import com.example.wallpaper.feature.category.presentation.navigation.category_route
 import com.example.wallpaper.feature.category_detail.presentation.navigation.categoryDetail
 import com.example.wallpaper.feature.category_detail.presentation.navigation.navigateToCategoryDetail
+import com.example.wallpaper.feature.image_detail.presentation.navigation.imageDetail
+import com.example.wallpaper.feature.image_detail.presentation.navigation.navigateToImageDetail
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 
@@ -27,6 +29,11 @@ fun WallpaperNavigation(
         startDestination = category_route
     ) {
         category(isScreenSizeCompact) { navController.navigateToCategoryDetail(it) }
-        categoryDetail { navController.navigateUp() }
+
+        categoryDetail(
+            onBackClick = { navController.navigateUp() }
+        ) { navController.navigateToImageDetail() }
+
+        imageDetail { navController.navigateUp() }
     }
 }
