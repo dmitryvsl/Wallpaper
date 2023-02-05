@@ -26,8 +26,13 @@ class ThemeConfigurator @Inject constructor(
     }
 
     override fun saveDarkModeIfFirstLaunch() {
-        if (sharedPrefs.getBoolean(PREFS_FIRST_LAUNCH, false))
+        if (sharedPrefs.getBoolean(PREFS_FIRST_LAUNCH, true)){
+            sharedPrefs.edit().apply {
+                putBoolean(PREFS_FIRST_LAUNCH, false)
+                apply()
+            }
             saveTheme(true)
+        }
     }
 
     override fun setLightTheme() {
