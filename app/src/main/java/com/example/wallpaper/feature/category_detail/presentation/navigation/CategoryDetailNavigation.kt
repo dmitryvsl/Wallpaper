@@ -23,6 +23,7 @@ fun NavController.navigateToCategoryDetail(
 
 fun NavGraphBuilder.categoryDetail(
     onBackClick: () -> Unit,
+    onThemeChange: (Boolean) -> Unit,
     navigateToImageDetail: () -> Unit,
 ) {
     composable(
@@ -34,7 +35,8 @@ fun NavGraphBuilder.categoryDetail(
         CategoryDetailScreen(
             categoryType = type,
             onBackClick = onBackClick,
-            navigateToImageDetail = navigateToImageDetail
+            navigateToImageDetail = navigateToImageDetail,
+            onThemeChange = onThemeChange
         )
     }
 }

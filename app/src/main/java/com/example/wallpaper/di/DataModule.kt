@@ -1,6 +1,8 @@
 package com.example.wallpaper.di
 
 import com.example.wallpaper.BuildConfig
+import com.example.wallpaper.core.data.ThemeConfigurator
+import com.example.wallpaper.core.data.ThemeMonitor
 import com.example.wallpaper.feature.category_detail.data.ImageListRepositoryImpl
 import com.example.wallpaper.feature.category_detail.data.datasource.ApiService
 import com.example.wallpaper.feature.category_detail.domain.repository.ImageListRepository
@@ -26,6 +28,8 @@ interface DataModule {
     @Binds
     fun bindsImageListRepository(repository: ImageListRepositoryImpl): ImageListRepository
 
+    @Binds
+    fun bindsThemeMonitor(themeMonitor: ThemeConfigurator): ThemeMonitor
     companion object{
 
         @Provides

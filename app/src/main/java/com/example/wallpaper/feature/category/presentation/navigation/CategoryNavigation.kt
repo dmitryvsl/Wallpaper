@@ -10,11 +10,13 @@ const val category_route = "category_route"
 fun NavGraphBuilder.category(
     isScreenSizeCompact: Boolean,
     navigateToCategoryDetail: (CategoryType) -> Unit,
+    onThemeChange: (Boolean) -> Unit,
 ) {
     composable(route = category_route) {
         CategoryScreen(
             isScreenSizeCompact = isScreenSizeCompact,
-            navigateToCategoryDetail = navigateToCategoryDetail
+            navigateToCategoryDetail = navigateToCategoryDetail,
+            onThemeChange = onThemeChange
         )
     }
 }

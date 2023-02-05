@@ -18,6 +18,7 @@ import com.example.wallpaper.feature.image_detail.presentation.navigation.naviga
 @Composable
 fun WallpaperNavigation(
     windowSizeClass: WindowSizeClass,
+    onThemeChange: (Boolean) -> Unit,
 ) {
     val navController = rememberNavController()
 
@@ -27,10 +28,15 @@ fun WallpaperNavigation(
         navController = navController,
         startDestination = category_route
     ) {
-        category(isScreenSizeCompact) { navController.navigateToCategoryDetail(it) }
+        category(
+            isScreenSizeCompact = isScreenSizeCompact,
+            navigateToCategoryDetail = {navController.navigateToCategoryDetail(it)},
+            onThemeChange = onThemeChange
+        )
 
         categoryDetail(
-            onBackClick = { navController.navigateUp() }
+            onBackClick = { navController.navigateUp() },
+            onThemeChange = onThemeChange
         ) { navController.navigateToImageDetail() }
 
         imageDetail { navController.navigateUp() }
