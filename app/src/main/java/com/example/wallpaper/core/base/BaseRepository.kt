@@ -4,7 +4,7 @@ import com.example.wallpaper.core.data.ConnectivityManagerNetworkMonitor
 import com.example.wallpaper.core.exception.NoNetworkException
 import com.example.wallpaper.core.exception.TooManyRequestException
 import com.example.wallpaper.core.model.DataState
-import com.example.wallpaper.feature.category_detail.domain.model.HttpStatusCode
+import com.example.wallpaper.feature.image_list.domain.model.HttpStatusCode
 import kotlinx.coroutines.flow.first
 import retrofit2.Response
 import java.net.ConnectException
