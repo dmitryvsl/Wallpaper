@@ -93,6 +93,7 @@ fun ImageListScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(
+            title = stringResource(getCategoryNameByCategoryType(categoryType)),
             onThemeChange = onThemeChange,
             navigationIcon = {
                 IconButton(
@@ -287,4 +288,13 @@ fun ShimmerImageCard() {
                 .shimmerEffect()
         ) {}
     }
+}
+
+private fun getCategoryNameByCategoryType(categoryType: CategoryType) = when(categoryType){
+    CategoryType.Animals -> R.string.animals
+    CategoryType.Music -> R.string.music
+    CategoryType.Nature -> R.string.nature
+    CategoryType.Fashion -> R.string.fashion
+    CategoryType.Sports -> R.string.sports
+    CategoryType.People -> R.string.people
 }
