@@ -3,9 +3,9 @@ package com.example.wallpaper.di
 import com.example.wallpaper.BuildConfig
 import com.example.wallpaper.core.data.ThemeConfigurator
 import com.example.wallpaper.core.data.ThemeMonitor
-import com.example.wallpaper.feature.category_detail.data.ImageListRepositoryImpl
-import com.example.wallpaper.feature.category_detail.data.datasource.ApiService
-import com.example.wallpaper.feature.category_detail.domain.repository.ImageListRepository
+import com.example.wallpaper.feature.image_list.data.ImageListRepositoryImpl
+import com.example.wallpaper.feature.image_list.data.datasource.ApiService
+import com.example.wallpaper.feature.image_list.domain.repository.ImageListRepository
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module

@@ -47,7 +47,7 @@ import com.example.wallpaper.core.components.LoadingPlaceholder
 import com.example.wallpaper.core.components.LockScreenOrientation
 import com.example.wallpaper.core.data.SharedPainter
 import com.example.wallpaper.feature.category.presentation.theme.dimens
-import com.example.wallpaper.feature.category_detail.presentation.ErrorItem
+import com.example.wallpaper.feature.image_list.presentation.ErrorItem
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

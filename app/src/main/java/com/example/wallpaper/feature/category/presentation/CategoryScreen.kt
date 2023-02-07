@@ -1,6 +1,5 @@
 package com.example.wallpaper.feature.category.presentation
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,14 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.wallpaper.R
 import com.example.wallpaper.core.components.TopAppBar
 import com.example.wallpaper.core.model.CategoryType
-import com.example.wallpaper.app.theme.WallpaperTheme
 import com.example.wallpaper.feature.category.presentation.theme.dimens
 
 @Composable
@@ -49,9 +46,10 @@ fun CategoryScreen(
     onThemeChange: (Boolean) -> Unit,
 ) {
     val categories by viewModel.categories.collectAsState()
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
         TopAppBar(onThemeChange = onThemeChange)
         if (isScreenSizeCompact)
