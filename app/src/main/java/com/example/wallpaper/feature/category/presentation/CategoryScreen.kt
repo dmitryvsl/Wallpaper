@@ -46,13 +46,14 @@ fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel(),
     isScreenSizeCompact: Boolean,
     navigateToCategoryDetail: (CategoryType) -> Unit,
+    onThemeChange: (Boolean) -> Unit,
 ) {
     val categories by viewModel.categories.collectAsState()
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)
     ) {
-        TopAppBar()
+        TopAppBar(onThemeChange = onThemeChange)
         if (isScreenSizeCompact)
             CategoryColumnList(
                 categories = categories,
@@ -156,14 +157,3 @@ fun CategoryCard(
         )
     }
 }
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun CategoryScreenPreview() {
-    WallpaperTheme {
-        CategoryScreen(
-            isScreenSizeCompact = true
-        ) {}
-    }
-}
-

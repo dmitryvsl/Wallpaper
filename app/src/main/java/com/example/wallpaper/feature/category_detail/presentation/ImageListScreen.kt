@@ -69,6 +69,7 @@ fun CategoryDetailScreen(
     categoryType: CategoryType,
     onBackClick: () -> Unit,
     navigateToImageDetail: () -> Unit,
+    onThemeChange: (Boolean) -> Unit,
 ) {
     var isFirstEnter by rememberSaveable { mutableStateOf(true) }
     val lazyGridState = rememberLazyGridState()
@@ -90,21 +91,23 @@ fun CategoryDetailScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.fillMaxSize()
     ) {
-        TopAppBar {
-            IconButton(
-                onClick = onBackClick
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.KeyboardArrowLeft,
-                    contentDescription = stringResource(R.string.back),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+        TopAppBar(
+            onThemeChange = onThemeChange,
+            navigationIcon = {
+                IconButton(
+                    onClick = onBackClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.back),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
-        }
+        )
+
         when {
             images.isNotEmpty() -> ImageList(
                 state = lazyGridState,
