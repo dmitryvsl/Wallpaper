@@ -23,6 +23,7 @@ import com.example.wallpaper.app.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(
+    title: String = stringResource(R.string.wallpaper),
     navigationIcon: @Composable () -> Unit = {},
     onThemeChange: (Boolean) -> Unit
 ) {
@@ -36,7 +37,7 @@ fun TopAppBar(
         ),
         title = {
             Text(
-                text = stringResource(R.string.wallpaper),
+                text = title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
